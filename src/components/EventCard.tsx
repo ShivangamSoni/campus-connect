@@ -1,4 +1,7 @@
-export default function EventCard({
+import { getServerAuthSession } from "@/server/auth";
+import Link from "next/link";
+
+export default async function EventCard({
     id,
     title,
     description,
@@ -8,6 +11,8 @@ export default function EventCard({
     description: string;
     organizationId: string;
 }) {
+    const session = await getServerAuthSession();
+
     return (
         <li className="bg-emerald-400 text-white w-56 p-5 rounded-lg flex flex-col gap-4">
             <header>
@@ -15,9 +20,18 @@ export default function EventCard({
                 <p>{description}</p>
             </header>
             <footer>
-                <button className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md">
-                    Join Activity
-                </button>
+                {session?.user ? (
+                    <button className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md">
+                        Join Event
+                    </button>
+                ) : (
+                    <Link
+                        href="/login"
+                        className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md"
+                    >
+                        Login to Join
+                    </Link>
+                )}
             </footer>
         </li>
     );

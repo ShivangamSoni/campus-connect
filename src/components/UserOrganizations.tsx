@@ -10,6 +10,7 @@ export default async function UserOrganizations({ id }: { id: string }) {
         },
     });
 
+    // console.log(myOrganizations);
     return (
         <section className="space-y-3">
             <h1 className="font-medium text-slate-700 text-2xl underline">

@@ -1,8 +1,12 @@
 import ActivityCard from "@/components/ActivityCard";
 import EventCard from "@/components/EventCard";
+import JoinOrganization from "@/components/JoinOrganization";
 import { prisma } from "@/db/connect";
+import { getServerAuthSession } from "@/server/auth";
 
 export default async function page({ params }: { params: { id: string } }) {
+    const session = await getServerAuthSession();
+
     const organization = await prisma.organization.findFirst({
         where: { id: params.id },
     });
@@ -19,13 +23,27 @@ export default async function page({ params }: { params: { id: string } }) {
         },
     });
 
-    const a = events[0];
+    const existingMembership =
+        session?.user &&
+        (await prisma.membership.findFirst({
+            where: {
+                userId: session.user.id as string,
+                organizationId: params.id,
+            },
+        }));
 
     return (
         <main className="space-y-6 p-6">
             <div className="space-y-2">
                 <h1 className="text-4xl">{organization?.name}</h1>
                 <p className="text-xl">{organization?.description}</p>
+                {existingMembership == null ? (
+                    <JoinOrganization orgId={params.id}>
+                        Join Organization
+                    </JoinOrganization>
+                ) : (
+                    <span>You&apos;re a Member</span>
+                )}
             </div>
 
             <section>
