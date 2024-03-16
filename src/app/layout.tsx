@@ -7,7 +7,8 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Activity Management App",
+    title: "Campus Connect",
+    description: "Student Organization, Activity & Events Management Platform",
 };
 
 export default function RootLayout({
