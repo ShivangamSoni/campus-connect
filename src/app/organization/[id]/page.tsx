@@ -78,6 +78,7 @@ export default async function page({ params }: { params: { id: string } }) {
                     {activites.map((activity) => (
                         <ActivityCard
                             key={activity.id}
+                            canJoin={existingMembership != null}
                             joined={
                                 myActivities.findIndex(
                                     (act) => act.id == activity.id
@@ -96,6 +97,7 @@ export default async function page({ params }: { params: { id: string } }) {
                     {events.map((event) => (
                         <EventCard
                             key={event.id}
+                            canJoin={existingMembership != null}
                             joined={
                                 myEvents.findIndex(
                                     (evt) => evt.id == event.id

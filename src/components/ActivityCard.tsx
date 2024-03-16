@@ -7,37 +7,49 @@ export default async function ActivityCard({
     title,
     description,
     joined,
+    canJoin,
 }: {
     id: string;
     title: string;
     description: string;
     organizationId: string;
-    joined?: boolean;
+    joined: boolean;
+    canJoin: boolean;
 }) {
     const session = await getServerAuthSession();
 
     return (
         <li className="bg-sky-400 text-white w-56 p-5 rounded-lg flex flex-col gap-4">
-            <header>
-                <h2>{title}</h2>
-                <p>{description}</p>
+            <header className="space-y-1">
+                <h2 className="text-lg">{title}</h2>
+                <p className="text-sm">{description}</p>
             </header>
             <footer>
-                {joined ? (
-                    <span>You are part of this Activity</span>
+                {!canJoin ? (
+                    <span className="text-slate-200 text-xs">
+                        You need to join the Organization
+                    </span>
                 ) : (
                     <>
-                        {session?.user ? (
-                            <JoinActivity activityId={id}>
-                                Join Activity
-                            </JoinActivity>
+                        {joined ? (
+                            <span className="text-slate-200 text-xs">
+                                You are part of this Activity
+                            </span>
                         ) : (
-                            <Link
-                                href="/login"
-                                className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md"
-                            >
-                                Login to Join
-                            </Link>
+                            <>
+                                {session?.user ? (
+                                    <JoinActivity activityId={id}>
+                                        Join Activity
+                                    </JoinActivity>
+                                ) : (
+                                    <Link
+                                        href="/login"
+                                        className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md"
+                                    >
+                                        Login to Join
+                                    </Link>
+                                )}
+                            </>
                         )}
                     </>
                 )}
