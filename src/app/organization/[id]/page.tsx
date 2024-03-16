@@ -3,6 +3,7 @@ import EventCard from "@/components/EventCard";
 import JoinOrganization from "@/components/JoinOrganization";
 import { prisma } from "@/db/connect";
 import { getServerAuthSession } from "@/server/auth";
+import Link from "next/link";
 
 export default async function page({ params }: { params: { id: string } }) {
     const session = await getServerAuthSession();
@@ -37,12 +38,24 @@ export default async function page({ params }: { params: { id: string } }) {
             <div className="space-y-2">
                 <h1 className="text-4xl">{organization?.name}</h1>
                 <p className="text-xl">{organization?.description}</p>
-                {existingMembership == null ? (
-                    <JoinOrganization orgId={params.id}>
-                        Join Organization
-                    </JoinOrganization>
+
+                {session?.user ? (
+                    <>
+                        {existingMembership == null ? (
+                            <JoinOrganization orgId={params.id}>
+                                Join Organization
+                            </JoinOrganization>
+                        ) : (
+                            <span>You&apos;re a Member</span>
+                        )}
+                    </>
                 ) : (
-                    <span>You&apos;re a Member</span>
+                    <Link
+                        href="/login"
+                        className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md"
+                    >
+                        Login to Join
+                    </Link>
                 )}
             </div>
 
