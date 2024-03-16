@@ -4,6 +4,7 @@ import JoinOrganization from "@/components/JoinOrganization";
 import { prisma } from "@/db/connect";
 import { getServerAuthSession } from "@/server/auth";
 import { getJoinedActivities } from "@/server/organizations/getJoinedActivities";
+import { getJoinedEvents } from "@/server/organizations/getJoinedEvents";
 import Link from "next/link";
 
 export default async function page({ params }: { params: { id: string } }) {
@@ -37,6 +38,11 @@ export default async function page({ params }: { params: { id: string } }) {
     const myActivities =
         session && session.user
             ? await getJoinedActivities({ id: session.user.id as string })
+            : [];
+
+    const myEvents =
+        session && session.user
+            ? await getJoinedEvents({ id: session.user.id as string })
             : [];
 
     return (
@@ -88,7 +94,15 @@ export default async function page({ params }: { params: { id: string } }) {
 
                 <ul className="flex flex-wrap gap-2">
                     {events.map((event) => (
-                        <EventCard key={event.id} {...event} />
+                        <EventCard
+                            key={event.id}
+                            joined={
+                                myEvents.findIndex(
+                                    (evt) => evt.id == event.id
+                                ) != -1
+                            }
+                            {...event}
+                        />
                     ))}
                 </ul>
             </section>

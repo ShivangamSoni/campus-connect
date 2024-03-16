@@ -1,15 +1,18 @@
 import { getServerAuthSession } from "@/server/auth";
 import Link from "next/link";
+import JoinEvent from "./JoinEvent";
 
 export default async function EventCard({
     id,
     title,
     description,
+    joined,
 }: {
     id: string;
     title: string;
     description: string;
     organizationId: string;
+    joined?: boolean;
 }) {
     const session = await getServerAuthSession();
 
@@ -20,17 +23,21 @@ export default async function EventCard({
                 <p>{description}</p>
             </header>
             <footer>
-                {session?.user ? (
-                    <button className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md">
-                        Join Event
-                    </button>
+                {joined ? (
+                    <span>You are part of this Event</span>
                 ) : (
-                    <Link
-                        href="/login"
-                        className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md"
-                    >
-                        Login to Join
-                    </Link>
+                    <>
+                        {session?.user ? (
+                            <JoinEvent eventId={id}>Join Event</JoinEvent>
+                        ) : (
+                            <Link
+                                href="/login"
+                                className="w-full flex justify-center items-center bg-rose-600 p-2 rounded-md"
+                            >
+                                Login to Join
+                            </Link>
+                        )}
+                    </>
                 )}
             </footer>
         </li>
