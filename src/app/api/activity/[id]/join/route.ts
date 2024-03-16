@@ -16,16 +16,15 @@ export async function POST(
             );
         }
 
-        const organizationId = params.id;
+        const activityId = params.id;
         const userId = session.user.id as string;
 
-        const existingMembership =
-            await prisma.organizationMembership.findFirst({
-                where: {
-                    userId,
-                    organizationId,
-                },
-            });
+        const existingMembership = await prisma.activityMembership.findFirst({
+            where: {
+                userId,
+                activityId,
+            },
+        });
 
         if (existingMembership) {
             return NextResponse.json(
@@ -34,12 +33,13 @@ export async function POST(
             );
         }
 
-        await prisma.organizationMembership.create({
+        await prisma.activityMembership.create({
             data: {
                 user: { connect: { id: userId } },
-                organization: { connect: { id: organizationId } },
+                activity: { connect: { id: activityId } },
             },
         });
+
         return NextResponse.json(
             { message: "Joined Successfully" },
             { status: 201 }

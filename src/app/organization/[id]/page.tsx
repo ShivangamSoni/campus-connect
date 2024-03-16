@@ -3,6 +3,7 @@ import EventCard from "@/components/EventCard";
 import JoinOrganization from "@/components/JoinOrganization";
 import { prisma } from "@/db/connect";
 import { getServerAuthSession } from "@/server/auth";
+import { getJoinedActivities } from "@/server/organizations/getJoinedActivities";
 import Link from "next/link";
 
 export default async function page({ params }: { params: { id: string } }) {
@@ -26,12 +27,17 @@ export default async function page({ params }: { params: { id: string } }) {
 
     const existingMembership =
         session?.user &&
-        (await prisma.membership.findFirst({
+        (await prisma.organizationMembership.findFirst({
             where: {
                 userId: session.user.id as string,
                 organizationId: params.id,
             },
         }));
+
+    const myActivities =
+        session && session.user
+            ? await getJoinedActivities({ id: session.user.id as string })
+            : [];
 
     return (
         <main className="space-y-6 p-6">
@@ -64,7 +70,15 @@ export default async function page({ params }: { params: { id: string } }) {
 
                 <ul className="flex flex-wrap gap-2">
                     {activites.map((activity) => (
-                        <ActivityCard key={activity.id} {...activity} />
+                        <ActivityCard
+                            key={activity.id}
+                            joined={
+                                myActivities.findIndex(
+                                    (act) => act.id == activity.id
+                                ) != -1
+                            }
+                            {...activity}
+                        />
                     ))}
                 </ul>
             </section>
