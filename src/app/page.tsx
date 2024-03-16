@@ -6,21 +6,10 @@ export default async function Home() {
 
     return (
         <main>
-            <nav>
-                <ul className="flex gap-3 p-2">
-                    <li>
-                        <Link href="/login">Login</Link>
-                    </li>
-                    <li>
-                        <Link href="/sign-up">Sign Up</Link>
-                    </li>
-                    <li>
-                        <Link href="/organization/65f52b2b1005fb8ca3470134/activity">
-                            Activity
-                        </Link>
-                    </li>
-                </ul>
-
+            <section className="space-y-3">
+                <h1 className="font-medium text-slate-700 text-2xl underline">
+                    Available Organizations
+                </h1>
                 <ul>
                     <li>
                         {organizations.map(({ id, name }) => (
@@ -30,7 +19,7 @@ export default async function Home() {
                         ))}
                     </li>
                 </ul>
-            </nav>
+            </section>
         </main>
     );
 }

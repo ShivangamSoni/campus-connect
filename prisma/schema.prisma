@@ -55,4 +55,25 @@ model User {
   admin    Boolean
 
   Membership Membership[]
+  Session    Session[]
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime @map("expiresAt")
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime @map("expiresAt")
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }
